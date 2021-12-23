@@ -1,0 +1,10 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/wtu_app?serverTimezone=GMT%2B8
+    username: root
+    password: abc123
+  redis:
+    host: 192.168.12.128
+
+web:
+  corsAllowedServer: ["localhost:8080"]
