@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import pers.xds.wtuapp.common.security.role.Roles;
 import pers.xds.wtuapp.security.common.AuthenticationEntryPointImpl;
 import pers.xds.wtuapp.security.common.CorsConfigurationSourceImpl;
 import pers.xds.wtuapp.security.configuration.ExtraSecurityProperties;
@@ -41,14 +42,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPointImpl());
 
         http.authorizeRequests()
-                        .antMatchers("/user").hasAnyRole("t");
+                .antMatchers("/version/**").hasAnyRole(Roles.ADMIN.getRole())
+                .antMatchers("/info/**").hasRole(Roles.ADMIN.getRole())
+                .antMatchers("/app/**").permitAll();
 
+        
         http.cors().configurationSource(new CorsConfigurationSourceImpl(extraSecurityProperties.getCorsAllowedServer()));
 
         http.formLogin()
                 .loginProcessingUrl("/login")
+                .usernameParameter("username")
+                .passwordParameter("password")
                 .failureHandler(new LoginFailHandler())
                 .successHandler(new LoginSuccessHandler());
+
+        http.rememberMe().alwaysRemember(true);
 
     }
 

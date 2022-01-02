@@ -21,6 +21,10 @@
             <groupId>pers.xds.wtuapp</groupId>
             <artifactId>admin-database</artifactId>
         </dependency>
+        <dependency>
+            <groupId>pers.xds.wtuapp</groupId>
+            <artifactId>admin-redis</artifactId>
+        </dependency>
     </dependencies>
 
 </project>

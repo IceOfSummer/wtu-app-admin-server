@@ -16,4 +16,14 @@
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>pers.xds.wtuapp</groupId>
+            <artifactId>admin-service</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>pers.xds.wtuapp</groupId>
+            <artifactId>admin-common</artifactId>
+        </dependency>
+    </dependencies>
 </project>

@@ -1,6 +1,13 @@
 package pers.xds.wtuapp.common.web;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.apache.tomcat.util.http.fileupload.servlet.ServletRequestContext;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import pers.xds.wtuapp.common.web.util.HttpUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 标准响应对象
@@ -37,8 +44,7 @@ public class ResBean<T> {
     private T data;
 
     public ResBean(int code, String message) {
-        this.code = code;
-        this.message = message;
+        this(code, message, null);
     }
 
     public ResBean(int code, String message, T data) {
@@ -112,16 +118,25 @@ public class ResBean<T> {
         return new ResBean<>(successCode, successMessage, data);
     }
 
+    @Deprecated
     public static <T> ResBean<T> fail(String errorMsg) {
         return new ResBean<>(failCode, errorMsg);
     }
 
     public static <T> ResBean<T> fail(ResBeanCode code) {
-        return new ResBean<>(code.getCode(), code.getMessage());
+        return fail(code, code.getMessage());
     }
 
     public static <T> ResBean<T> fail(ResBeanCode code, String message) {
+        setHttpCode(code);
         return new ResBean<>(code.getCode(), message);
+    }
+
+    private static void setHttpCode(ResBeanCode code) {
+        HttpServletResponse currentResponse = HttpUtils.getCurrentResponse();
+        if (currentResponse != null) {
+            currentResponse.setStatus(code.getHttpCode());
+        }
     }
 
 

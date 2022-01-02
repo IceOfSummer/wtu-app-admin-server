@@ -20,6 +20,6 @@ public class LoginFailHandler implements AuthenticationFailureHandler {
     public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
         System.out.println(exception.getMessage());
         response.setContentType("text/json;charset=utf-8");
-        response.getWriter().write(new ObjectMapper().writeValueAsString(ResBean.fail(ResBeanCode.LOGIN_FAILED)));
+        response.getWriter().write(new ObjectMapper().writeValueAsString(ResBean.fail(ResBeanCode.BAD_CREDENTIALS)));
     }
 }

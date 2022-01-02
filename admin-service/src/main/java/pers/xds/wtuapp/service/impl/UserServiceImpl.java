@@ -25,4 +25,5 @@ public class UserServiceImpl implements UserService {
     public User getUserByUsername(String username) {
         return userMapper.selectOne(new QueryWrapper<User>().eq(UserMapper.COLUMN_USERNAME, username));
     }
+
 }

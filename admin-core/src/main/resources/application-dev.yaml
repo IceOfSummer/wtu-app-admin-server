@@ -5,6 +5,16 @@ spring:
     password: abc123
   redis:
     host: 192.168.12.128
+  servlet:
+    multipart:
+      # 30MB
+      max-file-size: 31457280
+      # 1MB
+      max-request-size: 1048576
+
 
 web:
-  corsAllowedServer: ["localhost:8080"]
+  corsAllowedServer: ["http://localhost:8080", "http://localhost:63342"]
+
+server:
+  port: 8081

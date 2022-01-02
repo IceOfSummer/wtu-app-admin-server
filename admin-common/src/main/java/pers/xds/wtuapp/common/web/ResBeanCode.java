@@ -9,20 +9,33 @@ public enum ResBeanCode {
      * 教务系统登录过期
      */
     LOGIN_FAILED(100, "登录失败"),
-    AUTHORIZATION_NEEDED(101, "请先登录")
+    AUTHORIZATION_NEEDED(101, "请先登录", 403),
+    BAD_CREDENTIALS(102, "密码错误", 403),
+    BAD_REQUEST(103, "缺少所必要的参数", 400),
+    NO_DATA(104, "暂无相关数据")
     ;
 
 
     private final int code;
     private final String message;
+    private final int httpCode;
 
     ResBeanCode(int code, String message) {
+        this(code, message, 200);
+    }
+
+    ResBeanCode(int code, String message, int httpCode) {
         this.code = code;
         this.message = message;
+        this.httpCode = httpCode;
     }
 
     public int getCode() {
         return code;
+    }
+
+    public int getHttpCode() {
+        return httpCode;
     }
 
     public String getMessage() {
