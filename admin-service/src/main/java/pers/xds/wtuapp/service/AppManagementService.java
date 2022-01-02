@@ -3,6 +3,8 @@ package pers.xds.wtuapp.service;
 import org.springframework.lang.Nullable;
 import org.springframework.web.multipart.MultipartFile;
 import pers.xds.wtuapp.redis.bean.AppInfo;
+
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -17,7 +19,14 @@ public interface AppManagementService {
      * @return 版本信息
      */
     @Nullable
-    AppInfo getNewVersionInfo();
+    AppInfo getHotUpdateVersionInfo();
+
+    /**
+     * 获取安卓新版本信息
+     * @return 新版本信息
+     */
+    @Nullable
+    AppInfo getAndroidVersionInfo();
 
 
 
@@ -43,23 +52,36 @@ public interface AppManagementService {
      * @param versionName 版本名称
      * @param versionCode 版本号
      */
-    void publishNewVersion(String versionName, int versionCode);
+    void publishHotUpdateVersion(String versionName, int versionCode);
 
     /**
      * 升级版本, 自动添加版本号
      * @param versionName 版本名称
      */
-    void publishNewVersion(String versionName);
+    void publishHotUpdateVersion(String versionName);
+
+    /**
+     * 发布安卓安装包的新版本, 版本号自动加一
+     * @param versionName 版本名称
+     */
+    void publishAndroidVersion(String versionName);
+
+    /**
+     * 发布安卓安装包的新版本
+     * @param versionName 版本名称
+     * @param versionCode 版本号
+     */
+    void publishAndroidVersion(String versionName, int versionCode);
 
     /**
      * 获取Android安装包的文件列表
      * @return 文件列表
      */
-    String[] getAndroidApkList();
+    File[] getAndroidApkList();
 
     /**
      * 获取热更新资源列表
      * @return 资源列表
      */
-    String[] getHotUpdateResourcesList();
+    File[] getHotUpdateResourcesList();
 }

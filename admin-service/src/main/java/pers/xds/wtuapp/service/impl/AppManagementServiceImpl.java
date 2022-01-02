@@ -10,9 +10,6 @@ import pers.xds.wtuapp.redis.mapper.AppInfoRedisMapper;
 import pers.xds.wtuapp.service.AppManagementService;
 
 import java.io.*;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * @author DeSen Xu
@@ -33,8 +30,13 @@ public class AppManagementServiceImpl implements AppManagementService {
     }
 
     @Override
-    public AppInfo getNewVersionInfo() {
-        return appInfoRedisMapper.getNewVersionInfo();
+    public AppInfo getHotUpdateVersionInfo() {
+        return appInfoRedisMapper.getHotUpdateVersionInfo();
+    }
+
+    @Override
+    public AppInfo getAndroidVersionInfo() {
+        return appInfoRedisMapper.getAndroidUpdateVersionInfo();
     }
 
     @Override
@@ -48,25 +50,35 @@ public class AppManagementServiceImpl implements AppManagementService {
     }
 
     @Override
-    public void publishNewVersion(String versionName, int versionCode) {
-        appInfoRedisMapper.initVersionInfo(versionName, versionCode);
+    public void publishHotUpdateVersion(String versionName, int versionCode) {
+        appInfoRedisMapper.updateHotUpdateVersion(versionName, versionCode);
     }
 
     @Override
-    public void publishNewVersion(String versionName) {
-        appInfoRedisMapper.updateVersion(versionName);
+    public void publishHotUpdateVersion(String versionName) {
+        appInfoRedisMapper.updateHotUpdateVersion(versionName);
+    }
+
+    @Override
+    public void publishAndroidVersion(String versionName) {
+        appInfoRedisMapper.updateAndroidVersion(versionName);
+    }
+
+    @Override
+    public void publishAndroidVersion(String versionName, int versionCode) {
+        appInfoRedisMapper.updateAndroidVersion(versionName, versionCode);
     }
 
     @SneakyThrows
     @Override
-    public String[] getAndroidApkList() {
-        return ResourceUtils.getFile(FULL_APK_PATH).list();
+    public File[] getAndroidApkList() {
+        return ResourceUtils.getFile(FULL_APK_PATH).listFiles();
     }
 
     @SneakyThrows
     @Override
-    public String[] getHotUpdateResourcesList() {
-        return ResourceUtils.getFile(HOT_UPDATE_PATH).list();
+    public File[] getHotUpdateResourcesList() {
+        return ResourceUtils.getFile(HOT_UPDATE_PATH).listFiles();
     }
 
     private void saveFile(MultipartFile file , String name, String path) throws IOException {

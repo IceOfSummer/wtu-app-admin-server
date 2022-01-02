@@ -15,20 +15,39 @@ public interface AppInfoRedisMapper {
      * @return 新版本信息
      */
     @Nullable
-    AppInfo getNewVersionInfo();
+    AppInfo getHotUpdateVersionInfo();
+
+    /**
+     * 获取安卓最新版本的信息
+     * @return 新版本信息
+     */
+    @Nullable
+    AppInfo getAndroidUpdateVersionInfo();
 
     /**
      * 更新版本信息, 版本号自动加一
      * @param versionName 版本名称
      */
-    void updateVersion(String versionName);
+    void updateHotUpdateVersion(String versionName);
 
     /**
-     * 初始化版本信息
+     * 初始化热更新资源版本信息
      * @param versionName 版本名称
      * @param versionCode 版本号
      */
-    void initVersionInfo(String versionName, int versionCode);
+    void updateHotUpdateVersion(String versionName, int versionCode);
 
+    /**
+     * 更新安卓的相关版本信息
+     * @param versionName 版本名称
+     */
+    void updateAndroidVersion(String versionName);
+
+    /**
+     * 更新安卓的相关版本信息
+     * @param versionName 版本名称
+     * @param versionCode 版本号
+     */
+    void updateAndroidVersion(String versionName, int versionCode);
 
 }

@@ -18,11 +18,17 @@ import java.util.Map;
 @Component
 public class AppInfoRedisMapperImpl extends RedisBaseMapper implements AppInfoRedisMapper {
 
-    public static final String NEW_VERSION_KEY = "newVersion";
+    public static final String WGT_KEY = "wgt";
 
-    public static final String VERSION_CODE_KEY = "versionCode";
+    public static final String WGT_VERSION_CODE_KEY = "wgt-versionCode";
 
-    public static final String VERSION_NAME_KEY = "versionName";
+    public static final String WGT_VERSION_NAME_KEY = "wgt-versionName";
+
+    public static final String ANDROID_KEY = "android";
+
+    public static final String ANDROID_VERSION_CODE_KEY = "android-versionCode";
+
+    public static final String ANDROID_VERSION_NAME_KEY = "android-versionName";
 
     /**
      * 升级当前版本
@@ -40,14 +46,23 @@ public class AppInfoRedisMapperImpl extends RedisBaseMapper implements AppInfoRe
     }
 
     @Override
-    public AppInfo getNewVersionInfo() {
-        Map<Object, Object> entries = redisTemplate.opsForHash().entries(NEW_VERSION_KEY);
-        Object versionCodeObj = entries.get(VERSION_CODE_KEY);
+    public AppInfo getHotUpdateVersionInfo() {
+        return getVersionInfo(WGT_KEY, WGT_VERSION_NAME_KEY, WGT_VERSION_CODE_KEY);
+    }
+
+    @Override
+    public AppInfo getAndroidUpdateVersionInfo() {
+        return getVersionInfo(ANDROID_KEY, ANDROID_VERSION_NAME_KEY, ANDROID_VERSION_CODE_KEY);
+    }
+
+    private AppInfo getVersionInfo(String key, String versionNameKey, String versionCodeKey) {
+        Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
+        Object versionCodeObj = entries.get(versionCodeKey);
         if (versionCodeObj == null) {
             return null;
         }
         int versionCode = Integer.parseInt(versionCodeObj.toString());
-        Object versionNameObj = entries.get(VERSION_NAME_KEY);
+        Object versionNameObj = entries.get(versionNameKey);
         if (versionNameObj == null) {
             return null;
         }
@@ -55,17 +70,31 @@ public class AppInfoRedisMapperImpl extends RedisBaseMapper implements AppInfoRe
         return new AppInfo(versionName, versionCode);
     }
 
+
     @Override
-    public void updateVersion(String versionName){
-        redisTemplate.execute(LUA_UPDATE_VERSION, Arrays.asList(NEW_VERSION_KEY, VERSION_NAME_KEY, VERSION_CODE_KEY), versionName);
+    public void updateHotUpdateVersion(String versionName){
+        redisTemplate.execute(LUA_UPDATE_VERSION, Arrays.asList(WGT_KEY, WGT_VERSION_NAME_KEY, WGT_VERSION_CODE_KEY), versionName);
     }
 
     @Override
-    public void initVersionInfo(String versionName, int versionCode) {
+    public void updateHotUpdateVersion(String versionName, int versionCode) {
         HashMap<String, String> map = new HashMap<>(2);
-        map.put(VERSION_NAME_KEY, versionName);
-        map.put(VERSION_CODE_KEY, String.valueOf(versionCode));
-        redisTemplate.opsForHash().putAll(NEW_VERSION_KEY, map);
+        map.put(WGT_VERSION_NAME_KEY, versionName);
+        map.put(WGT_VERSION_CODE_KEY, String.valueOf(versionCode));
+        redisTemplate.opsForHash().putAll(WGT_KEY, map);
+    }
+
+    @Override
+    public void updateAndroidVersion(String versionName) {
+        redisTemplate.execute(LUA_UPDATE_VERSION, Arrays.asList(ANDROID_KEY, ANDROID_VERSION_NAME_KEY, ANDROID_VERSION_CODE_KEY), versionName);
+    }
+
+    @Override
+    public void updateAndroidVersion(String versionName, int versionCode) {
+        HashMap<String, String> map = new HashMap<>(2);
+        map.put(ANDROID_VERSION_NAME_KEY, versionName);
+        map.put(ANDROID_VERSION_CODE_KEY, String.valueOf(versionCode));
+        redisTemplate.opsForHash().putAll(ANDROID_KEY, map);
     }
 
 
