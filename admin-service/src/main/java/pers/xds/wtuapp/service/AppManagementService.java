@@ -5,8 +5,8 @@ import org.springframework.web.multipart.MultipartFile;
 import pers.xds.wtuapp.redis.bean.AppInfo;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 
 /**
  * @author DeSen Xu
@@ -84,4 +84,20 @@ public interface AppManagementService {
      * @return 资源列表
      */
     File[] getHotUpdateResourcesList();
+
+    /**
+     * 删除安卓的版本文件
+     * @param fileName 版本名称
+     * @return 是否删除成功
+     * @throws FileNotFoundException 没有找到该文件
+     */
+    boolean deleteAndroidApk(String fileName) throws FileNotFoundException;
+
+    /**
+     * 删除热更新资源
+     * @param fileName 版本名称
+     * @return 是否删除成功
+     * @throws FileNotFoundException 没有找到该文件
+     */
+    boolean deleteWgt(String fileName) throws FileNotFoundException;
 }

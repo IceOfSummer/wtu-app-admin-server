@@ -16,4 +16,6 @@ public class AppInfo {
     private String versionName;
 
     private int versionCode;
+
+    private int size;
 }

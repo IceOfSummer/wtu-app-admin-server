@@ -27,27 +27,31 @@ public interface AppInfoRedisMapper {
     /**
      * 更新版本信息, 版本号自动加一
      * @param versionName 版本名称
+     * @param size 文件大小(kb向上取整)
      */
-    void updateHotUpdateVersion(String versionName);
+    void updateHotUpdateVersion(String versionName, long size);
 
     /**
      * 初始化热更新资源版本信息
      * @param versionName 版本名称
      * @param versionCode 版本号
+     * @param size 文件大小(kb向上取整)
      */
-    void updateHotUpdateVersion(String versionName, int versionCode);
+    void updateHotUpdateVersion(String versionName, int versionCode, long size);
 
     /**
      * 更新安卓的相关版本信息
      * @param versionName 版本名称
+     * @param size 文件大小(kb向上取整)
      */
-    void updateAndroidVersion(String versionName);
+    void updateAndroidVersion(String versionName, long size);
 
     /**
      * 更新安卓的相关版本信息
      * @param versionName 版本名称
      * @param versionCode 版本号
+     * @param size 文件大小(kb向上取整)
      */
-    void updateAndroidVersion(String versionName, int versionCode);
+    void updateAndroidVersion(String versionName, int versionCode,long size);
 
 }

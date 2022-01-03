@@ -30,14 +30,18 @@ public class AppInfoRedisMapperImpl extends RedisBaseMapper implements AppInfoRe
 
     public static final String ANDROID_VERSION_NAME_KEY = "android-versionName";
 
+    public static final String FILE_SIZE_KEY = "file-size";
+
     /**
      * 升级当前版本
      * KEYS[1] hash的键
      * KEYS[2] versionName的键
      * KEYS[3] versionCode的键
+     * KEYS[4] file-size
      * ARGV[1] versionName的值
+     * ARGV[2] file-size
      */
-    private static final RedisScript<Void> LUA_UPDATE_VERSION = RedisScript.of("redis.call(\"hset\", KEYS[1], KEYS[2], ARGV[1])\n" +
+    private static final RedisScript<Void> LUA_UPDATE_VERSION = RedisScript.of("redis.call(\"hmset\", KEYS[1], KEYS[2], ARGV[1], KEYS[4], ARGV[2])\n" +
             "redis.call(\"hincrby\", KEYS[1], KEYS[3], 1)", Void.class);
 
     @Autowired
@@ -67,34 +71,45 @@ public class AppInfoRedisMapperImpl extends RedisBaseMapper implements AppInfoRe
             return null;
         }
         String versionName = versionNameObj.toString();
-        return new AppInfo(versionName, versionCode);
+        Object fileSizeObj = entries.get(FILE_SIZE_KEY);
+        if (fileSizeObj == null) {
+            return null;
+        }
+        int fileSize = Integer.parseInt(fileSizeObj.toString());
+        return new AppInfo(versionName, versionCode, fileSize);
     }
 
 
     @Override
-    public void updateHotUpdateVersion(String versionName){
-        redisTemplate.execute(LUA_UPDATE_VERSION, Arrays.asList(WGT_KEY, WGT_VERSION_NAME_KEY, WGT_VERSION_CODE_KEY), versionName);
+    public void updateHotUpdateVersion(String versionName, long size){
+        redisTemplate.execute(LUA_UPDATE_VERSION,
+                Arrays.asList(WGT_KEY, WGT_VERSION_NAME_KEY, WGT_VERSION_CODE_KEY, FILE_SIZE_KEY), versionName, size);
     }
 
     @Override
-    public void updateHotUpdateVersion(String versionName, int versionCode) {
-        HashMap<String, String> map = new HashMap<>(2);
-        map.put(WGT_VERSION_NAME_KEY, versionName);
-        map.put(WGT_VERSION_CODE_KEY, String.valueOf(versionCode));
-        redisTemplate.opsForHash().putAll(WGT_KEY, map);
+    public void updateHotUpdateVersion(String versionName, int versionCode, long size) {
+        updateVersion(WGT_VERSION_NAME_KEY, versionName, WGT_VERSION_CODE_KEY, versionCode, size, WGT_KEY);
     }
 
     @Override
-    public void updateAndroidVersion(String versionName) {
-        redisTemplate.execute(LUA_UPDATE_VERSION, Arrays.asList(ANDROID_KEY, ANDROID_VERSION_NAME_KEY, ANDROID_VERSION_CODE_KEY), versionName);
+    public void updateAndroidVersion(String versionName, long size) {
+        redisTemplate.execute(LUA_UPDATE_VERSION,
+                Arrays.asList(ANDROID_KEY, ANDROID_VERSION_NAME_KEY, ANDROID_VERSION_CODE_KEY, FILE_SIZE_KEY), versionName, size);
     }
 
     @Override
-    public void updateAndroidVersion(String versionName, int versionCode) {
-        HashMap<String, String> map = new HashMap<>(2);
-        map.put(ANDROID_VERSION_NAME_KEY, versionName);
-        map.put(ANDROID_VERSION_CODE_KEY, String.valueOf(versionCode));
-        redisTemplate.opsForHash().putAll(ANDROID_KEY, map);
+    public void updateAndroidVersion(String versionName, int versionCode, long size) {
+        updateVersion(ANDROID_VERSION_NAME_KEY, versionName, ANDROID_VERSION_CODE_KEY, versionCode, size, ANDROID_KEY);
+    }
+
+    private void updateVersion(String versionNameKey, String versionNameValue,
+                               String versionCodeKey, int versionCodeValue,
+                               long size, String key) {
+        HashMap<String, String> map = new HashMap<>(3);
+        map.put(versionNameKey, versionNameValue);
+        map.put(versionCodeKey, String.valueOf(versionCodeValue));
+        map.put(FILE_SIZE_KEY, String.valueOf(size));
+        redisTemplate.opsForHash().putAll(key, map);
     }
 
 

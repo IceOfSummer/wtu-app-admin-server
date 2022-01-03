@@ -20,9 +20,9 @@ public class AppManagementServiceImpl implements AppManagementService {
 
     private AppInfoRedisMapper appInfoRedisMapper;
 
-    public static final String HOT_UPDATE_PATH = "file:app/hotUpdate/";
+    public static final String WGT_RESOURCE_PREFIX = "file:app/hotUpdate/";
 
-    public static final String FULL_APK_PATH = "file:app/full/android/";
+    public static final String ANDROID_APK_PREFIX = "file:app/full/android/";
 
     @Autowired
     public void setAppInfoRedisMapper(AppInfoRedisMapper appInfoRedisMapper) {
@@ -41,48 +41,72 @@ public class AppManagementServiceImpl implements AppManagementService {
 
     @Override
     public void updateAndroidApp(MultipartFile apk, String versionName) throws IOException {
-        saveFile(apk, versionName, FULL_APK_PATH);
+        saveFile(apk, versionName, ANDROID_APK_PREFIX);
     }
 
     @Override
     public void updateHotUpdateResources(MultipartFile wgt, String versionName) throws IOException {
-        saveFile(wgt, versionName, HOT_UPDATE_PATH);
+        saveFile(wgt, versionName, WGT_RESOURCE_PREFIX);
     }
 
     @Override
     public void publishHotUpdateVersion(String versionName, int versionCode) {
-        appInfoRedisMapper.updateHotUpdateVersion(versionName, versionCode);
+        appInfoRedisMapper.updateHotUpdateVersion(versionName, versionCode, getFileSize(versionName, WGT_RESOURCE_PREFIX));
     }
 
     @Override
     public void publishHotUpdateVersion(String versionName) {
-        appInfoRedisMapper.updateHotUpdateVersion(versionName);
+        appInfoRedisMapper.updateHotUpdateVersion(versionName, getFileSize(versionName, WGT_RESOURCE_PREFIX));
     }
 
     @Override
     public void publishAndroidVersion(String versionName) {
-        appInfoRedisMapper.updateAndroidVersion(versionName);
+        appInfoRedisMapper.updateAndroidVersion(versionName, getFileSize(versionName, ANDROID_APK_PREFIX));
     }
 
     @Override
     public void publishAndroidVersion(String versionName, int versionCode) {
-        appInfoRedisMapper.updateAndroidVersion(versionName, versionCode);
+        appInfoRedisMapper.updateAndroidVersion(versionName, versionCode, getFileSize(versionName, ANDROID_APK_PREFIX));
+    }
+
+    /**
+     * 获取文件大小 (MB)
+     * @param versionName 文件名称
+     * @param pathPrefix 文件前缀路径
+     * @return 文件大小(KB)
+     */
+    @SneakyThrows
+    private long getFileSize(String versionName, String pathPrefix) {
+        return ResourceUtils.getFile(pathPrefix + versionName).length() / 1024;
     }
 
     @SneakyThrows
     @Override
     public File[] getAndroidApkList() {
-        return ResourceUtils.getFile(FULL_APK_PATH).listFiles();
+        return ResourceUtils.getFile(ANDROID_APK_PREFIX).listFiles();
     }
 
     @SneakyThrows
     @Override
     public File[] getHotUpdateResourcesList() {
-        return ResourceUtils.getFile(HOT_UPDATE_PATH).listFiles();
+        return ResourceUtils.getFile(WGT_RESOURCE_PREFIX).listFiles();
+    }
+
+    @Override
+    public boolean deleteAndroidApk(String fileName) throws FileNotFoundException {
+        File file = ResourceUtils.getFile(ANDROID_APK_PREFIX + fileName);
+        return file.delete();
+    }
+
+    @Override
+    public boolean deleteWgt(String fileName) throws FileNotFoundException {
+        File file = ResourceUtils.getFile(WGT_RESOURCE_PREFIX + fileName);
+        return file.delete();
     }
 
     private void saveFile(MultipartFile file , String name, String path) throws IOException {
         file.transferTo(ResourceUtils.getFile(path + name + "." + file.getName()).getAbsoluteFile());
     }
+
 
 }

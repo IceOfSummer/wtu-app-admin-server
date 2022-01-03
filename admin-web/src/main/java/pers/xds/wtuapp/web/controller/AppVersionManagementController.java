@@ -10,6 +10,8 @@ import pers.xds.wtuapp.common.web.ResBean;
 import pers.xds.wtuapp.common.web.ResBeanCode;
 import pers.xds.wtuapp.common.web.util.StringUtils;
 import pers.xds.wtuapp.service.AppManagementService;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**
@@ -42,7 +44,7 @@ public class AppVersionManagementController {
         return ResBean.success();
     }
 
-    @PostMapping("/update/hot")
+    @PostMapping("/update/wgt")
     public ResBean<Void> uploadHotUpdateResources(@RequestParam MultipartFile wgt,
                                                   @RequestParam String versionName) {
         if (StringUtils.isEmpty(versionName)) {
@@ -54,5 +56,35 @@ public class AppVersionManagementController {
             e.printStackTrace();
         }
         return ResBean.success();
+    }
+
+    @PostMapping("/delete/android")
+    public ResBean<Void> deleteAndroidApk(@RequestParam String fileName) {
+        boolean status;
+        try {
+            status = appManagementService.deleteAndroidApk(fileName);
+        } catch (FileNotFoundException e) {
+            return ResBean.fail(ResBeanCode.CAN_NOT_FIND_FILE);
+        }
+        if (status) {
+            return ResBean.success();
+        } else {
+            return ResBean.fail(ResBeanCode.CAN_NOT_FIND_FILE);
+        }
+    }
+
+    @PostMapping("/delete/wgt")
+    public ResBean<Void> deleteWgtResource(@RequestParam String fileName) {
+        boolean status;
+        try {
+            status = appManagementService.deleteWgt(fileName);
+        } catch (FileNotFoundException e) {
+            return ResBean.fail(ResBeanCode.CAN_NOT_FIND_FILE);
+        }
+        if (status) {
+            return ResBean.success();
+        } else {
+            return ResBean.fail(ResBeanCode.CAN_NOT_FIND_FILE);
+        }
     }
 }

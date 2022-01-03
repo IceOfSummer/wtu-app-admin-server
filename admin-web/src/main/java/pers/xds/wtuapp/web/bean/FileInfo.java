@@ -15,8 +15,15 @@ public class FileInfo {
 
     private String createTime;
 
+    /**
+     * 大小 kb
+     */
+    private int size;
+
     public FileInfo(File file) {
         this.fileName = file.getName();
         this.createTime = String.valueOf(file.lastModified());
+        // 换算为KB
+        this.size = (int) (file.length() / 1024);
     }
 }

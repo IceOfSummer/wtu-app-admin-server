@@ -42,8 +42,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.exceptionHandling().authenticationEntryPoint(new AuthenticationEntryPointImpl());
 
         http.authorizeRequests()
-                .antMatchers("/version/**").hasAnyRole(Roles.ADMIN.getRole())
-                .antMatchers("/info/**").hasRole(Roles.ADMIN.getRole())
+                // 版本文件上传的接口
+                .antMatchers("/version/**").hasRole(Roles.ADMIN.getRole())
+                // App安装包下载接口
+                .antMatchers("/download/**").permitAll()
+                // App版本信息接口
+                .antMatchers("/info/**").permitAll()
+                // App所有文件下载接口
                 .antMatchers("/app/**").permitAll();
 
         
