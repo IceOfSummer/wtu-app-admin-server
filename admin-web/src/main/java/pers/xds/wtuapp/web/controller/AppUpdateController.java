@@ -14,7 +14,7 @@ import pers.xds.wtuapp.service.AppManagementService;
  * @date 2021-12-29 16:37
  */
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/update")
 public class AppUpdateController {
 
     private AppManagementService appManagementService;

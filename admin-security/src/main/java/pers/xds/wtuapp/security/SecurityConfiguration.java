@@ -49,7 +49,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 // App版本信息接口
                 .antMatchers("/info/**").permitAll()
                 // App所有文件下载接口
-                .antMatchers("/app/**").permitAll();
+                .antMatchers("/app/**").permitAll()
+                // App版本更新接口
+                .antMatchers("/update/**").hasRole(Roles.ADMIN.getRole());
 
         
         http.cors().configurationSource(new CorsConfigurationSourceImpl(extraSecurityProperties.getCorsAllowedServer()));
