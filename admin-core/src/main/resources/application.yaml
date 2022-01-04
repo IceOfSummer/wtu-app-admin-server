@@ -4,3 +4,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
   profiles:
     active: dev
+  servlet:
+    multipart:
+      # 30MB
+      max-file-size: 31457280
+      # 1MB
+      max-request-size: 1048576
