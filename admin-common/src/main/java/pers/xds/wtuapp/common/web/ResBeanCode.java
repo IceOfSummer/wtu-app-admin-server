@@ -9,8 +9,8 @@ public enum ResBeanCode {
      * 教务系统登录过期
      */
     LOGIN_FAILED(100, "登录失败"),
-    AUTHORIZATION_NEEDED(101, "请先登录", 403),
-    BAD_CREDENTIALS(102, "密码错误", 403),
+    AUTHORIZATION_NEEDED(101, "请先登录"),
+    BAD_CREDENTIALS(102, "密码错误"),
     BAD_REQUEST(103, "缺少所必要的参数", 400),
     NO_DATA(104, "暂无相关数据"),
     CAN_NOT_FIND_FILE(105, "无法找到目标文件"),
