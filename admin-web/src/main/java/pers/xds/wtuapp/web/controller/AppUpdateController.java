@@ -26,12 +26,12 @@ public class AppUpdateController {
 
     @PostMapping("/wgt/update")
     public ResBean<Void> updateVersionInfo(@RequestParam String versionName,
-                                           @RequestParam(required = false) Integer versionCode) {
-        if (versionCode != null) {
-            appManagementService.publishHotUpdateVersion(versionName, versionCode);
-        } else {
-            appManagementService.publishHotUpdateVersion(versionName);
+                                           @RequestParam Integer versionCode,
+                                           @RequestParam(required = false) Integer minVersionCode) {
+        if (minVersionCode == null) {
+            minVersionCode = 1;
         }
+        appManagementService.publishHotUpdateVersion(versionName, versionCode, minVersionCode);
         return ResBean.success();
     }
 

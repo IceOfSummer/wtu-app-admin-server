@@ -37,7 +37,18 @@ public interface AppInfoRedisMapper {
      * @param versionCode 版本号
      * @param size 文件大小(kb向上取整)
      */
+    @Deprecated
     void updateHotUpdateVersion(String versionName, int versionCode, long size);
+
+    /**
+     *
+     * 初始化热更新资源版本信息
+     * @param versionName 版本名称
+     * @param versionCode 版本号
+     * @param size 文件大小(kb向上取整)
+     * @param minVersionCode 安装更新包至少需要的版本号
+     */
+    void updateHotUpdateVersion(String versionName, int versionCode, long size, int minVersionCode);
 
     /**
      * 更新安卓的相关版本信息

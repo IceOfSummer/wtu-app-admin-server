@@ -51,14 +51,26 @@ public interface AppManagementService {
      * 该方法用于第一次发布版本信息, 会直接替换相关最新版本信息
      * @param versionName 版本名称
      * @param versionCode 版本号
+     * @param minVersionCode 安装更新包所需的最小版本号
      */
+    void publishHotUpdateVersion(String versionName, int versionCode, int minVersionCode);
+
+    /**
+     * 发布新版本信息, 只有发布后才能从app直接下载
+     * 该方法用于第一次发布版本信息, 会直接替换相关最新版本信息
+     * @param versionName 版本名称
+     * @param versionCode 版本号
+     */
+    @Deprecated
     void publishHotUpdateVersion(String versionName, int versionCode);
 
     /**
      * 升级版本, 自动添加版本号
      * @param versionName 版本名称
      */
+    @Deprecated
     void publishHotUpdateVersion(String versionName);
+
 
     /**
      * 发布安卓安装包的新版本, 版本号自动加一

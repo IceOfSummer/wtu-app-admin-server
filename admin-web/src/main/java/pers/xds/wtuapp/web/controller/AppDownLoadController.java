@@ -32,7 +32,7 @@ public class AppDownLoadController {
             return;
         }
         String versionName = androidVersionInfo.getVersionName();
-        response.setStatus(HttpServletResponse.SC_SEE_OTHER);
+        response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
         response.setHeader(HttpHeaders.LOCATION, "/app/full/android/" + versionName);
 
     }

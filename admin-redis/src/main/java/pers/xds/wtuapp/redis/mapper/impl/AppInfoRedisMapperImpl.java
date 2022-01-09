@@ -24,6 +24,8 @@ public class AppInfoRedisMapperImpl extends RedisBaseMapper implements AppInfoRe
 
     public static final String WGT_VERSION_NAME_KEY = "wgt-versionName";
 
+    public static final String WGT_MIN_VERSION_CODE_KEY = "wgt-min-versionCode";
+
     public static final String ANDROID_KEY = "android";
 
     public static final String ANDROID_VERSION_CODE_KEY = "android-versionCode";
@@ -51,15 +53,15 @@ public class AppInfoRedisMapperImpl extends RedisBaseMapper implements AppInfoRe
 
     @Override
     public AppInfo getHotUpdateVersionInfo() {
-        return getVersionInfo(WGT_KEY, WGT_VERSION_NAME_KEY, WGT_VERSION_CODE_KEY);
+        return getVersionInfo(WGT_KEY, WGT_VERSION_NAME_KEY, WGT_VERSION_CODE_KEY, WGT_MIN_VERSION_CODE_KEY);
     }
 
     @Override
     public AppInfo getAndroidUpdateVersionInfo() {
-        return getVersionInfo(ANDROID_KEY, ANDROID_VERSION_NAME_KEY, ANDROID_VERSION_CODE_KEY);
+        return getVersionInfo(ANDROID_KEY, ANDROID_VERSION_NAME_KEY, ANDROID_VERSION_CODE_KEY, null);
     }
 
-    private AppInfo getVersionInfo(String key, String versionNameKey, String versionCodeKey) {
+    private AppInfo getVersionInfo(String key, String versionNameKey, String versionCodeKey, String minVersionCodeKey) {
         Map<Object, Object> entries = redisTemplate.opsForHash().entries(key);
         Object versionCodeObj = entries.get(versionCodeKey);
         if (versionCodeObj == null) {
@@ -76,7 +78,14 @@ public class AppInfoRedisMapperImpl extends RedisBaseMapper implements AppInfoRe
             return null;
         }
         int fileSize = Integer.parseInt(fileSizeObj.toString());
-        return new AppInfo(versionName, versionCode, fileSize);
+        Integer minVersionCode = null;
+        if (minVersionCodeKey != null) {
+            Object o = entries.get(minVersionCodeKey);
+            if (o != null) {
+                minVersionCode = (Integer) o;
+            }
+        }
+        return new AppInfo(versionName, versionCode, fileSize, minVersionCode);
     }
 
 
@@ -89,6 +98,16 @@ public class AppInfoRedisMapperImpl extends RedisBaseMapper implements AppInfoRe
     @Override
     public void updateHotUpdateVersion(String versionName, int versionCode, long size) {
         updateVersion(WGT_VERSION_NAME_KEY, versionName, WGT_VERSION_CODE_KEY, versionCode, size, WGT_KEY);
+    }
+
+    @Override
+    public void updateHotUpdateVersion(String versionName, int versionCode, long size, int minVersionCode) {
+        HashMap<String, String> map = new HashMap<>(4);
+        map.put(WGT_VERSION_NAME_KEY, versionName);
+        map.put(WGT_VERSION_CODE_KEY, String.valueOf(versionCode));
+        map.put(FILE_SIZE_KEY, String.valueOf(size));
+        map.put(WGT_MIN_VERSION_CODE_KEY, String.valueOf(minVersionCode));
+        redisTemplate.opsForHash().putAll(WGT_KEY, map);
     }
 
     @Override

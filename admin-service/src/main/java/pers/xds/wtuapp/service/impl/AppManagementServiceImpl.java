@@ -50,6 +50,11 @@ public class AppManagementServiceImpl implements AppManagementService {
     }
 
     @Override
+    public void publishHotUpdateVersion(String versionName, int versionCode, int minVersionCode) {
+        appInfoRedisMapper.updateHotUpdateVersion(versionName, versionCode, getFileSize(versionName, WGT_RESOURCE_PREFIX), minVersionCode);
+    }
+
+    @Override
     public void publishHotUpdateVersion(String versionName, int versionCode) {
         appInfoRedisMapper.updateHotUpdateVersion(versionName, versionCode, getFileSize(versionName, WGT_RESOURCE_PREFIX));
     }
