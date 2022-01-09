@@ -82,7 +82,7 @@ public class AppInfoRedisMapperImpl extends RedisBaseMapper implements AppInfoRe
         if (minVersionCodeKey != null) {
             Object o = entries.get(minVersionCodeKey);
             if (o != null) {
-                minVersionCode = (Integer) o;
+                minVersionCode = Integer.parseInt(o.toString());
             }
         }
         return new AppInfo(versionName, versionCode, fileSize, minVersionCode);
